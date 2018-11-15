@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Nov  6 15:15:05 2018
-TD4 - Partie 1 hey hey
+TD4 - Partie 1 
 @author: ejacquemet
 """
 
