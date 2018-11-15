@@ -213,7 +213,7 @@ fig.colorbar(surf, shrink=0.5, aspect=5)
 plt.show()
 '''
 
-# gradient de f
+# gradient de g
 def gradg1(p):
     dx=4*p[0]**3 - 3*p[0]**2 - 40*p[0] + 1 
     dy=4*p[1]**3 - 3*p[1]**2 - 40*p[1] + 1
