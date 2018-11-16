@@ -57,7 +57,9 @@ def recuit(x0,k1,k2,tmax) :
     X[0]=x0
     racine=x0
     t=1
+    N=[]
     norme=abs(gradf1(x0))
+    N.append(log(norme))
     while( norme>0.001 and t<tmax):
         #deplacement
         D=np.random.normal(0, sqrt(k1*exp(-1.0/(1000*T))))
@@ -72,17 +74,17 @@ def recuit(x0,k1,k2,tmax) :
                 X[t]=new
         #critère d'arrêt  
         norme=abs(gradf1(X[t]))
+        N.append(log(norme))
         racine=X[t]
         #diminution T
         t+=1
         T=1.0/t
     X[t:]=racine
-    
     print("Solution : ",racine)
     print("Nombre d'iterations : ",t)
     print("Norme gradient : ",norme)
     
-    return (X,racine,t,norme)
+    return (X,racine,t,norme,N)
 
 # paramètres :
 k1=10
@@ -148,6 +150,8 @@ ax.legend()
 plt.savefig("k1k'005.png")
 plt.show()
 '''
+
+# impact sur itérations
 '''
 X=np.linspace(0.1,10,5)
 Y1=np.zeros(len(X))
@@ -174,6 +178,25 @@ ax.legend()
 #plt.savefig("fonctionf1.png")
 plt.show()
 '''
+'''
+# impact sur l'évolution de la norme
+X=np.arange(len(res2[4]))
+Y1=res2[4]
+
+# Affichage figure
+fig = plt.figure() 
+ax = fig.gca() 
+ax.set_title("Evolution de la norme - k=%.3f ; k'=%.3f" % (k1,k2) )
+ax.set_xlabel("itération")
+ax.set_ylabel("log(norme)")
+ax.plot(X,Y1)
+ax.plot([0,10000],[log(0.001),log(0.001)],color="crimson")
+ax.legend()
+plt.ylim([-10,12])
+#plt.savefig("log_normef1.k10.k'05.png")
+plt.show()
+'''
+
 ##################################
 ## 2 : Fonction de R^2 dans R   ##
 ##################################
@@ -231,6 +254,8 @@ def recuit2D(p0,k1,k2,tmax) :
     t=1
     grad=gradg1(p0)
     norme=abs(grad[0])+abs(grad[1])
+    N=[]
+    N.append(log(norme))
     while( norme>0.001 and t<tmax):
         #deplacement
         D=[np.random.normal(0, sqrt(k1*exp(-1.0/(1000*T)))),np.random.normal(0, sqrt(k1*exp(-1.0/(1000*T))))]
@@ -246,6 +271,7 @@ def recuit2D(p0,k1,k2,tmax) :
         #critère d'arrêt  
         grad=gradg1(P[t])
         norme=abs(grad[0])+abs(grad[1])
+        N.append(log(norme))
         racine=P[t]
         steps[0][t]=racine[0]
         steps[1][t]=racine[1]
@@ -260,21 +286,20 @@ def recuit2D(p0,k1,k2,tmax) :
     print("Nombre d'iterations : ",t)
     print("Norme gradient : ",norme)
     
-    return (steps,racine,t,norme)
+    return (steps,racine,t,norme,N)
 
 # paramètres :
 e=10^(-3)
-k1=0.1
-k2=0.5
+k1=1
+k2=.1
 tmax=20000
-x0=[4,4]
+x0=[-4,-4]
 print("\nCalcul des points d'équilibres : ")
 print("\nx0=(%d,%d), k=%4.2f, k'=%4.2f, tmax=%d :" %(x0[0],x0[1],k1,k2,tmax) )
 tmps1=time.clock()
 res3=recuit2D(x0,k1,k2,tmax)
 tmps2=time.clock()
 print ("Temps d'execution : %s secondes --- " %(tmps2-tmps1))
-
 
 # Affichage figure
 fig = plt.figure() # ouverture de la zone graphique
@@ -285,7 +310,7 @@ x, y = np.meshgrid(x, y) # tracé de la grille
 
 F= x**4 - x**3 - 20*x**2 + x + 1 + y**4 - y**3 - 20*y**2 + y + 1
 surf = ax.plot_surface(x, y, F, rstride=1, zorder=1,alpha=0.6,cstride=1, linewidth=0, cmap=cm.PRGn, antialiased=False)
-ax.set_title("\nx0=(%d,%d), k=%4.2f, k'=%4.2f, tmax=%d :" %(x0[0],x0[1],k1,k2,tmax) )
+#ax.set_title("\nx0=(%d,%d), k=%4.3f, k'=%4.3f, tmax=%d :" %(x0[0],x0[1],k1,k2,tmax) )
 ax.plot(res3[0][0], res3[0][1], g1(res3[0]),zorder=2) #plot definition and options 
 ax.scatter(res3[1][0],res3[1][1],g1(res3[1]), s=100, color="blue",zorder=3)
 ax.scatter(x0[0],x0[0],g1(x0), s=100, color="red",zorder=4)
@@ -316,6 +341,25 @@ for k2 in [50,5,0.5] :
         res=recuit2D([4,4],k1,k2,tmax)
         fichier.write(str(k1)+"\t"+str(k2)+"\t4\t"+str(res[1][0])+"\t"+str(res[1][1])+"\t"+str(res[2])+"\n")
 fichier.close()
+'''
+'''
+# impact sur l'évolution de la norme
+X=np.arange(len(res3[4]))
+Y1=res3[4]
+
+# Affichage figure
+fig = plt.figure() 
+ax = fig.gca() 
+ax.set_title("Evolution de la norme - k=%.3f ; k'=%.3f" % (k1,k2) )
+ax.set_xlabel("itération")
+ax.set_ylabel("log(norme)")
+ax.plot(X,Y1)
+ax.plot([0,20000],[log(0.001),log(0.001)],color="crimson")
+ax.legend()
+plt.ylim([-10,12])
+plt.savefig("log_normeg1.k01.k'005.png")
+plt.show()
+
 '''
 
 ########################################
@@ -376,10 +420,10 @@ def recuit2DV2(p0,k1,k2,tmax) :
 
 # paramètres :
 e=10^(-3)
-k1=0.1
-k2=0.5
+k1=1
+k2=0.1
 tmax=20000
-x0=[4,4]
+x0=[-4,-4]
 print("\nCalcul des points d'équilibres : ")
 print("\nx0=(%d,%d), k=%4.2f, k'=%4.2f, tmax=%d :" %(x0[0],x0[1],k1,k2,tmax) )
 tmps1=time.clock()
@@ -397,9 +441,9 @@ y = np.arange(-5, 5, 0.1) # échelle y
 x, y = np.meshgrid(x, y) # tracé de la grille
 
 F= x**4 - x**3 - 20*x**2 + x + 1 + y**4 - y**3 - 20*y**2 + y + 1
-surf = ax.plot_surface(x, y, F, rstride=1, zorder=1,alpha=0.6,cstride=1, linewidth=0, cmap=cm.PRGn, antialiased=False)
-ax.set_title("\nx0=(%d,%d), k=%4.2f, k'=%4.2f, tmax=%d :" %(x0[0],x0[1],k1,k2,tmax) )
-ax.plot(res4[0][0], res4[0][1], g1(res4[0]),zorder=2) #plot definition and options 
+surf = ax.plot_surface(x, y, F, rstride=1, zorder=1,alpha=0.6,cstride=1, linewidth=0, cmap=cm.PiYG, antialiased=False)
+#ax.set_title("\nx0=(%d,%d), k=%4.3f, k'=%4.3f, tmax=%d :" %(x0[0],x0[1],k1,k2,tmax) )
+ax.plot(res4[0][0], res4[0][1], g1(res4[0]),zorder=2,color="orange") #plot definition and options 
 ax.scatter(res4[1][0],res4[1][1],g1(res4[1]), s=100, color="blue",zorder=3)
 ax.scatter(x0[0],x0[0],g1(x0), s=100, color="red",zorder=4)
 
@@ -410,3 +454,4 @@ ax.set_zlabel('g(x,y)')
 fig.colorbar(surf, shrink=0.5, aspect=5)
 #plt.savefig("fonctionf1.png")
 plt.show()
+
