@@ -71,7 +71,7 @@ def geneVilles(n,L):
 villes=geneVilles(n,L)
 print("Position des villes : ")
 print(villes)
-'''
+
 colors=couleurs(len(villes))
 fig = plt.figure()
 ax = fig.gca()
@@ -86,7 +86,7 @@ for i in range(len(villes)) :
     ax.scatter(villes[i][0],villes[i][1],zorder=2,color=colors[i],s=100)
 plt.show()
 #plt.savefig("fonctionf1.png")
-'''
+
 
 ################################
 ## 2 : Distance Euclidienne   ##
@@ -220,7 +220,7 @@ ax.set_ylabel('distance')
 ax.plot(X,res1[4],color="teal")
 #plt.savefig("fonctionf1.png")
 plt.show()
-'''
+
 
 # stats 
 fichier = open("Voyageur.txt", "w")
@@ -249,3 +249,4 @@ for k in [1,0.5,0,0.01]:
         fichier.write(str(k)+"\tf1\t"+str(res2[1])+"\t"+str(tps2)+"\t"+str(res2[0])+"\t"+str(iter2)+"\n")
         fichier.write(str(k)+"\tf3\t"+str(res3[1])+"\t"+str(tps3)+"\t"+str(res3[0])+"\t"+str(iter3)+"\n")
 fichier.close()
+'''
