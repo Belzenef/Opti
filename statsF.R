@@ -3,6 +3,7 @@ rm(list = ls())
 library(ggplot2)
 library(doBy)
 
+#**********************************************************************
 data1<-read.table("fonctionf/paramsf.txt", h=T, dec=".")
 
 # 1D
@@ -29,8 +30,9 @@ summary(test)
 summary(test[test$Depart==2,])
 summaryBy(nbIter~k1+k2+Depart, data=data1, FUN=c(mean))
 
-#**********
+#**********************************************************************
 data1<-read.table("fonctiong/paramsg4.txt", h=T, dec=".")
+
 # 2D
 Equilibre<-as.factor(
   ((data1$X >(-2.9) & data1$X<(-2.7)) & (data1$Y<(-2.7) & data1$Y>(-2.9)))*1+
@@ -57,3 +59,28 @@ summary(test)
 summary(test[test$Depart==-4,c("k1","k2","Depart","nbIter","Equilibre","Overt")])
 summary(test[test$Depart==4,c("k1","k2","Depart","nbIter","Equilibre","Overt")])
 #ggsave("evolequig4.png",p)
+
+#**********************************************************************
+# Voyageur
+data1<-read.table("Voyageur.txt", h=T, dec=".", sep="\t")
+data1$k<-as.factor(data1$k)
+summary(data1)
+p <- ggplot(data1, aes(x = Fonction, y =log10(Dist), color = Fonction)) + 
+  geom_jitter(size=2) + 
+  ggtitle(" ") + theme_bw() +
+  scale_color_discrete(labels=c("1/t^3","1/t","1/log(t)"))+
+  facet_wrap(~k)+
+  theme(axis.title=element_text(size=11,face="bold"))
+p
+
+p <- ggplot(data1, aes(x = Fonction, y =Iter, color = Fonction)) + 
+  geom_jitter(size=2) + 
+  ggtitle(" ") + theme_bw() +
+  scale_color_discrete(labels=c("1/t^3","1/t","1/log(t)"))+
+  facet_wrap(~k)+
+  theme(axis.title=element_text(size=11,face="bold"))
+p
+test<-data1[data1$k==1 & data1$Fonction=="f1",]
+length(test[test$Dist==min(test$Dist),])
+summary(test)
+

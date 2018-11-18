@@ -20,7 +20,7 @@ import time
 L=500
 n=10
 k=1
-tmax=100
+tmax=500
 
 ################################
 ## 0 : Fonctions d'affichage  ##
@@ -35,22 +35,21 @@ def couleurs(n) :
         cols.append((a,b,c))
     return cols
     
-def aff(villes,trajet,L):
-    colors=couleurs(len(villes))
+def aff(villes,trajet,L,n,colors):
     fig = plt.figure() 
     ax = fig.gca() 
-    ax.set_title('')
+    ax.set_title('N = %d' % n)
     ax.set_xlabel('x')
     ax.set_ylabel('y')
     ax.plot([0,L],[0,0],color="crimson",zorder=1)
     ax.plot([0,L],[L,L],color="crimson",zorder=1)
     ax.plot([0,0],[0,L],color="crimson",zorder=1)
     ax.plot([L,L],[0,L],color="crimson",zorder=1)
+    for i in range(len(villes)) : 
+        ax.scatter(villes[i][0],villes[i][1],zorder=2,color=colors[i],s=100)
     for i in range(len(villes)-1) :
-        ax.scatter(villes[trajet[i]][0],villes[trajet[i]][1],zorder=2,color=colors[i],s=100)
-        ax.plot([villes[trajet[i]][0],villes[trajet[i+1]][0]],[villes[trajet[i]][1],villes[trajet[i+1]][1]],color=colors[i],zorder=1)
-    ax.scatter(villes[trajet[i+1]][0],villes[trajet[i+1]][1],zorder=2,color=colors[i+1],s=100)
-    ax.plot([villes[trajet[i+1]][0],villes[trajet[0]][0]],[villes[trajet[i+1]][1],villes[trajet[0]][1]],color=colors[i+1],zorder=1)
+        ax.plot([villes[trajet[i]][0],villes[trajet[i+1]][0]],[villes[trajet[i]][1],villes[trajet[i+1]][1]],color="grey",zorder=1)
+    ax.plot([villes[trajet[i+1]][0],villes[trajet[0]][0]],[villes[trajet[i+1]][1],villes[trajet[0]][1]],color="grey",zorder=1)
     #plt.savefig("fonctionf1.png")
     plt.show()
     
@@ -72,7 +71,22 @@ def geneVilles(n,L):
 villes=geneVilles(n,L)
 print("Position des villes : ")
 print(villes)
-
+'''
+colors=couleurs(len(villes))
+fig = plt.figure()
+ax = fig.gca()
+ax.set_title('Villes aléatoires : ')
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+ax.plot([0,L],[0,0],color="crimson",zorder=1)
+ax.plot([0,L],[L,L],color="crimson",zorder=1)
+ax.plot([0,0],[0,L],color="crimson",zorder=1)
+ax.plot([L,L],[0,L],color="crimson",zorder=1)
+for i in range(len(villes)) : 
+    ax.scatter(villes[i][0],villes[i][1],zorder=2,color=colors[i],s=100)
+plt.show()
+#plt.savefig("fonctionf1.png")
+'''
 
 ################################
 ## 2 : Distance Euclidienne   ##
@@ -132,9 +146,19 @@ print(trajet)
 #########################################
 print("\n *** 4: Implémentation de l'algorithme ***")
 
-def recuit(villes,trajetInit,k,tmax) :
+def f1(t):
+    return t**3
+
+def f2(t):
+    return t
+
+def f3(t):
+    return log(t)
+
+def recuit(villes,k,tmax,f) :
     #init
-    T=1.0
+    trajetInit=np.random.permutation(len(villes))
+    I=0
     X=[]
     D=[]
     X.append(trajetInit)
@@ -152,35 +176,39 @@ def recuit(villes,trajetInit,k,tmax) :
         if (distTotale(villes,new) <= D[-1]) :
             X.append(new)
             D.append(distTotale(villes,new))
+            I=t
         else :
             test=np.random.random()
-            if test<(k*exp(-De/(1000.0*T))) :
+            v=-De*f(t)/1000.0
+            if(v>=700): v=700
+            v=k*exp(v)
+            if test<v:
                 X.append(new)
-                D.append(distTotale(villes,new))                
+                D.append(distTotale(villes,new))
+                I=t                
             else : 
                 X.append(X[-1])
                 D.append(D[-1])
         #diminution
         t+=1
-        T=1.0/(t)
-    return (X[-1],distTotale(villes,X[-1]),t,X,D)
+    return (X[-1],distTotale(villes,X[-1]),I,X,D)
 
 tmps1=time.clock()
-res1=recuit(villes,trajet,k,tmax)
+res1=recuit(villes,k,tmax,f1)
 tmps2=time.clock()
 print("\n--- Trajet optimal : ")
 print(res1[0])
 print("Longueur du trajet : %.2f m" % res1[1])
 print("Nombre d'itérations : %d" % res1[2])
 print ("Temps d'execution : %s secondes --- " %(tmps2-tmps1))
-res2=recuit(villes,trajet,k,tmax)
-res3=recuit(villes,trajet,k,tmax)
-res4=recuit(villes,trajet,k,tmax)
-aff(villes,res1[0],L)
+#res2=recuit(villes,k,tmax,colors)
+#res3=recuit(villes,k,tmax,colors)
+#res4=recuit(villes,k,tmax,colors)
+aff(villes,res1[0],L,100,colors)
 #aff(villes,res2[0],L)
 #aff(villes,res3[0],L)
 #aff(villes,res4[0],L)
-
+'''
 # Evolution de la distance 
 X=np.arange(0,tmax,1)
 
@@ -192,4 +220,32 @@ ax.set_ylabel('distance')
 ax.plot(X,res1[4],color="teal")
 #plt.savefig("fonctionf1.png")
 plt.show()
+'''
 
+# stats 
+fichier = open("Voyageur.txt", "w")
+fichier.write("k\tFonction\tDist\ttpsExe\tTrajet\tIter\n")
+for k in [1,0.5,0,0.01]:
+    for i in range(100):
+        tmps1=time.clock()
+        res1=recuit(villes,k,tmax,f1)
+        tmps2=time.clock()
+        tps1=tmps2-tmps1
+        iter1=res1[2]
+        
+        tmps1=time.clock()
+        res2=recuit(villes,k,tmax,f2)
+        tmps2=time.clock()
+        tps2=tmps2-tmps1
+        iter2=res2[2]
+        
+        tmps1=time.clock()
+        res3=recuit(villes,k,tmax,f3)
+        tmps2=time.clock()
+        tps3=tmps2-tmps1
+        iter3=res3[2]
+        
+        fichier.write(str(k)+"\tf2\t"+str(res1[1])+"\t"+str(tps1)+"\t"+str(res1[0])+"\t"+str(iter1)+"\n")
+        fichier.write(str(k)+"\tf1\t"+str(res2[1])+"\t"+str(tps2)+"\t"+str(res2[0])+"\t"+str(iter2)+"\n")
+        fichier.write(str(k)+"\tf3\t"+str(res3[1])+"\t"+str(tps3)+"\t"+str(res3[0])+"\t"+str(iter3)+"\n")
+fichier.close()
