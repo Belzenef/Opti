@@ -281,11 +281,11 @@ def recuit2D(p0,k1,k2,tmax) :
     P[t:]=racine
     steps[0][t:]=racine[0]
     steps[1][t:]=racine[1]
-    
+    '''
     print("Solution : ",racine)
     print("Nombre d'iterations : ",t)
     print("Norme gradient : ",norme)
-    
+    '''
     return (steps,racine,t,norme,N)
 
 # paramètres :
@@ -300,7 +300,7 @@ tmps1=time.clock()
 res3=recuit2D(x0,k1,k2,tmax)
 tmps2=time.clock()
 print ("Temps d'execution : %s secondes --- " %(tmps2-tmps1))
-
+'''
 # Affichage figure
 fig = plt.figure() # ouverture de la zone graphique
 ax = fig.gca(projection='3d') 
@@ -322,6 +322,7 @@ ax.set_zlabel('g(x,y)')
 fig.colorbar(surf, shrink=0.5, aspect=5)
 #plt.savefig("fonctionf1.png")
 plt.show()
+'''
 
 '''
 fichier = open("paramsg4.txt", "a")
@@ -410,11 +411,11 @@ def recuit2DV2(p0,k1,k2,tmax) :
     P[t:]=racine
     steps[0][t:]=racine[0]
     steps[1][t:]=racine[1]
-    
+    '''
     print("Solution : ",racine)
     print("Nombre d'iterations : ",t)
     print("Norme gradient : ",norme)
-    
+    '''
     return (steps,racine,t,norme)
 
 
@@ -432,7 +433,7 @@ tmps2=time.clock()
 print ("Temps d'execution : %s secondes --- " %(tmps2-tmps1))
 
 
-
+'''
 # Affichage figure
 fig = plt.figure() # ouverture de la zone graphique
 ax = fig.gca(projection='3d') 
@@ -454,4 +455,24 @@ ax.set_zlabel('g(x,y)')
 fig.colorbar(surf, shrink=0.5, aspect=5)
 #plt.savefig("fonctionf1.png")
 plt.show()
+'''
 
+# stats :
+fichier = open("paramsgV2.txt", "w")
+fichier.write("version\tk1\tk2\tDepart\tX\tY\tnbIter\n")
+k2=0.1
+for k1 in [0.1,1] :
+    for i in range(100) :
+        res=recuit2D([-4,-4],k1,k2,tmax)
+        fichier.write("1\t"+str(k1)+"\t"+str(k2)+"\t-4\t"+str(res[1][0])+"\t"+str(res[1][1])+"\t"+str(res[2])+"\n")
+        res=recuit2DV2([-4,-4],k1,k2,tmax)
+        fichier.write("2\t"+str(k1)+"\t"+str(k2)+"\t-4\t"+str(res[1][0])+"\t"+str(res[1][1])+"\t"+str(res[2])+"\n")
+        res=recuit2D([2,2],k1,k2,tmax)
+        fichier.write("1\t"+str(k1)+"\t"+str(k2)+"\t2\t"+str(res[1][0])+"\t"+str(res[1][1])+"\t"+str(res[2])+"\n")
+        res=recuit2DV2([2,2],k1,k2,tmax)
+        fichier.write("2\t"+str(k1)+"\t"+str(k2)+"\t2\t"+str(res[1][0])+"\t"+str(res[1][1])+"\t"+str(res[2])+"\n")
+        res=recuit2D([0,0],k1,k2,tmax)
+        fichier.write("1\t"+str(k1)+"\t"+str(k2)+"\t0\t"+str(res[1][0])+"\t"+str(res[1][1])+"\t"+str(res[2])+"\n")
+        res=recuit2DV2([0,0],k1,k2,tmax)
+        fichier.write("2\t"+str(k1)+"\t"+str(k2)+"\t0\t"+str(res[1][0])+"\t"+str(res[1][1])+"\t"+str(res[2])+"\n")
+fichier.close()

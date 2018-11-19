@@ -72,15 +72,19 @@ p <- ggplot(data1, aes(x = Fonction, y =log10(Dist), color = Fonction)) +
   facet_wrap(~k)+
   theme(axis.title=element_text(size=11,face="bold"))
 p
-
-p <- ggplot(data1, aes(x = Fonction, y =Iter, color = Fonction)) + 
+#ggsave("VoyageurParFonction.png",p)
+p <- ggplot(data1, aes(x = Fonction, y =tpsExe, color = Fonction)) + 
   geom_jitter(size=2) + 
   ggtitle(" ") + theme_bw() +
   scale_color_discrete(labels=c("1/t^3","1/t","1/log(t)"))+
   facet_wrap(~k)+
   theme(axis.title=element_text(size=11,face="bold"))
 p
-test<-data1[data1$k==1 & data1$Fonction=="f1",]
-length(test[test$Dist==min(test$Dist),])
-summary(test)
+test<-data1[data1$k==0 & data1$Fonction=="f3",]
+str(test[test$Dist<=1421.7,])
+mean(test$Iter)
+min(test$Dist)
+mean(test$Dist)
+mean(test$tpsExe)
+
 
