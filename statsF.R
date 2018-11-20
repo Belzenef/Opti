@@ -59,6 +59,35 @@ summary(test)
 summary(test[test$Depart==-4,c("k1","k2","Depart","nbIter","Equilibre","Overt")])
 summary(test[test$Depart==4,c("k1","k2","Depart","nbIter","Equilibre","Overt")])
 #ggsave("evolequig4.png",p)
+#**********************************************************************
+# Amélioration
+data1<-read.table("paramsgV2.txt", h=T, dec=".")
+data1<-data1[(data1$Depart!=0),]
+# 2D
+Equilibre<-as.factor(
+  ((data1$X >(-2.9) & data1$X<(-2.7)) & (data1$Y<(-2.7) & data1$Y>(-2.9)))*1+
+    ((data1$X >(3.4) & data1$X<(3.6)) & (data1$Y<(-2.7) & data1$Y>(-2.9)))*2+
+    ((data1$X<(-2.7) & data1$X>(-2.9)) & (data1$Y<(3.6) & data1$Y>(3.4)))*3+
+    ((data1$X<(3.6) & data1$X>(3.4)) & (data1$Y<(3.6) & data1$Y>(3.4)))*4)
+data1<-cbind(data1,Equilibre)
+data1$Equilibre<-as.factor(data1$Equilibre)
+data1$version<-as.factor(data1$version)
+data1$k1<-as.factor(data1$k1)
+data1$k2<-as.factor(data1$k2)
+data1$Depart<-as.factor(data1$Depart)
+data1$nbIter[data1$nbIter>=100000]<-20000
+summary(data1)
+p <- ggplot(data1, aes(x = Depart, y =nbIter, color = Equilibre)) + 
+  geom_jitter(size=2) + 
+  ggtitle(" ") + theme_bw() +
+  facet_wrap(~ k1+k2+version)+ 
+  theme(axis.title=element_text(size=11,face="bold"))
+p
+test<-data1[data1$k1==10 & data1$k2==0.1 & data1$Depart==2
+            & data1$version==1,
+            c("version","k1","k2","Depart","nbIter","Equilibre")]
+summary(test)
+#ggsave("evolequig4.png",p)
 
 #**********************************************************************
 # Voyageur
@@ -72,7 +101,7 @@ p <- ggplot(data1, aes(x = Fonction, y =log10(Dist), color = Fonction)) +
   facet_wrap(~k)+
   theme(axis.title=element_text(size=11,face="bold"))
 p
-#ggsave("VoyageurParFonction.png",p)
+#ggsave("evolequigV2.png",p)
 p <- ggplot(data1, aes(x = Fonction, y =tpsExe, color = Fonction)) + 
   geom_jitter(size=2) + 
   ggtitle(" ") + theme_bw() +

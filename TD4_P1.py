@@ -290,7 +290,7 @@ def recuit2D(p0,k1,k2,tmax) :
 
 # paramètres :
 e=10^(-3)
-k1=1
+k1=10
 k2=.1
 tmax=20000
 x0=[-4,-4]
@@ -314,7 +314,9 @@ surf = ax.plot_surface(x, y, F, rstride=1, zorder=1,alpha=0.6,cstride=1, linewid
 ax.plot(res3[0][0], res3[0][1], g1(res3[0]),zorder=2) #plot definition and options 
 ax.scatter(res3[1][0],res3[1][1],g1(res3[1]), s=100, color="blue",zorder=3)
 ax.scatter(x0[0],x0[0],g1(x0), s=100, color="red",zorder=4)
-
+ax.set_xlim([-6,6])
+ax.set_ylim([-6,6])
+ax.set_zlim([-100,500])
 ax.set_xlabel('x')
 ax.set_ylabel('y')
 ax.set_zlabel('g(x,y)')
@@ -421,7 +423,7 @@ def recuit2DV2(p0,k1,k2,tmax) :
 
 # paramètres :
 e=10^(-3)
-k1=1
+k1=10
 k2=0.1
 tmax=20000
 x0=[-4,-4]
@@ -432,8 +434,25 @@ res4=recuit2DV2(x0,k1,k2,tmax)
 tmps2=time.clock()
 print ("Temps d'execution : %s secondes --- " %(tmps2-tmps1))
 
+# impact sur l'évolution de la norme
+X=np.arange(len(res3[4]))
+Y1=res3[4]
 
-'''
+# Affichage figure
+fig = plt.figure() 
+ax = fig.gca() 
+ax.set_title("Evolution de la norme - k=%.3f ; k'=%.3f" % (k1,k2) )
+ax.set_xlabel("itération")
+ax.set_ylabel("log(norme)")
+ax.plot(X,Y1)
+ax.plot([0,20000],[log(0.001),log(0.001)],color="crimson")
+ax.legend()
+plt.ylim([-10,12])
+plt.savefig("log_normeg1.k10.k'01.png")
+plt.show()
+
+
+
 # Affichage figure
 fig = plt.figure() # ouverture de la zone graphique
 ax = fig.gca(projection='3d') 
@@ -455,24 +474,27 @@ ax.set_zlabel('g(x,y)')
 fig.colorbar(surf, shrink=0.5, aspect=5)
 #plt.savefig("fonctionf1.png")
 plt.show()
-'''
 
+'''
+tmax=20000
 # stats :
-fichier = open("paramsgV2.txt", "w")
+fichier = open("paramsgV2.txt", "a")
 fichier.write("version\tk1\tk2\tDepart\tX\tY\tnbIter\n")
-k2=0.1
-for k1 in [0.1,1] :
-    for i in range(100) :
-        res=recuit2D([-4,-4],k1,k2,tmax)
-        fichier.write("1\t"+str(k1)+"\t"+str(k2)+"\t-4\t"+str(res[1][0])+"\t"+str(res[1][1])+"\t"+str(res[2])+"\n")
-        res=recuit2DV2([-4,-4],k1,k2,tmax)
-        fichier.write("2\t"+str(k1)+"\t"+str(k2)+"\t-4\t"+str(res[1][0])+"\t"+str(res[1][1])+"\t"+str(res[2])+"\n")
-        res=recuit2D([2,2],k1,k2,tmax)
-        fichier.write("1\t"+str(k1)+"\t"+str(k2)+"\t2\t"+str(res[1][0])+"\t"+str(res[1][1])+"\t"+str(res[2])+"\n")
-        res=recuit2DV2([2,2],k1,k2,tmax)
-        fichier.write("2\t"+str(k1)+"\t"+str(k2)+"\t2\t"+str(res[1][0])+"\t"+str(res[1][1])+"\t"+str(res[2])+"\n")
-        res=recuit2D([0,0],k1,k2,tmax)
-        fichier.write("1\t"+str(k1)+"\t"+str(k2)+"\t0\t"+str(res[1][0])+"\t"+str(res[1][1])+"\t"+str(res[2])+"\n")
-        res=recuit2DV2([0,0],k1,k2,tmax)
-        fichier.write("2\t"+str(k1)+"\t"+str(k2)+"\t0\t"+str(res[1][0])+"\t"+str(res[1][1])+"\t"+str(res[2])+"\n")
+for k2 in [0.1]:
+    for k1 in [10] :
+        for i in range(100) :
+            res=recuit2D([-4,-4],k1,k2,tmax)
+            fichier.write("1\t"+str(k1)+"\t"+str(k2)+"\t-4\t"+str(res[1][0])+"\t"+str(res[1][1])+"\t"+str(res[2])+"\n")
+            res=recuit2DV2([-4,-4],k1,k2,tmax)
+            fichier.write("2\t"+str(k1)+"\t"+str(k2)+"\t-4\t"+str(res[1][0])+"\t"+str(res[1][1])+"\t"+str(res[2])+"\n")
+            res=recuit2D([2,2],k1,k2,tmax)
+            fichier.write("1\t"+str(k1)+"\t"+str(k2)+"\t2\t"+str(res[1][0])+"\t"+str(res[1][1])+"\t"+str(res[2])+"\n")
+            res=recuit2DV2([2,2],k1,k2,tmax)
+            fichier.write("2\t"+str(k1)+"\t"+str(k2)+"\t2\t"+str(res[1][0])+"\t"+str(res[1][1])+"\t"+str(res[2])+"\n")
+            #res=recuit2D([0,0],k1,k2,tmax)
+            #fichier.write("1\t"+str(k1)+"\t"+str(k2)+"\t0\t"+str(res[1][0])+"\t"+str(res[1][1])+"\t"+str(res[2])+"\n")
+            #res=recuit2DV2([0,0],k1,k2,tmax)
+            #fichier.write("2\t"+str(k1)+"\t"+str(k2)+"\t0\t"+str(res[1][0])+"\t"+str(res[1][1])+"\t"+str(res[2])+"\n")
+    
 fichier.close()
+'''
