@@ -83,7 +83,6 @@ def recuit(x0,k1,k2,tmax) :
     print("Solution : ",racine)
     print("Nombre d'iterations : ",t)
     print("Norme gradient : ",norme)
-    
     return (X,racine,t,norme,N)
 
 # paramètres :
@@ -107,7 +106,7 @@ print ("Temps d'execution : %s secondes --- " %(tmps2-tmps1))
 
 # Stats
 '''
-fichier = open("paramsf.txt", "a")
+fichier = open("paramsf.txt", "w")
 fichier.write("k1\tk2\tDepart\tSolution\tnbIter\n")
 k2=0.5
 for k1 in [0.1,1,10] :
@@ -151,39 +150,10 @@ plt.savefig("k1k'005.png")
 plt.show()
 '''
 
-# impact sur itérations
-'''
-X=np.linspace(0.1,10,5)
-Y1=np.zeros(len(X))
-Y2=np.zeros(len(X))
-for i in range(len(X)) :
-    Y1[i] = recuit(2,X[i],k2,tmax)
-    Y2[i] = recuit(-3,X[i],k2,tmax)
-
-# Affichage figure
-
-K1=[0.01,0.1,1,10]
-K2=[0.05,0.5,5,50]
-Y1=[2269,4081,6458,8668]
-Y2=[8670,8668,8720,9832]
-fig = plt.figure() 
-ax = fig.gca() 
-ax.set_title("Evolution du nombre d'itération moyen en fonction de k'")
-ax.set_xlabel("k'")
-ax.set_ylabel('nb iter')
-ax.scatter(K2,Y2)
-ax.plot(K2,Y2)
-#ax.scatter(K2,Y2, label="k'")
-ax.legend()
-#plt.savefig("fonctionf1.png")
-plt.show()
-'''
-'''
 # impact sur l'évolution de la norme
+'''
 X=np.arange(len(res2[4]))
 Y1=res2[4]
-
-# Affichage figure
 fig = plt.figure() 
 ax = fig.gca() 
 ax.set_title("Evolution de la norme - k=%.3f ; k'=%.3f" % (k1,k2) )
@@ -204,37 +174,6 @@ print("\n---------- Définition de g ----------")
 def g1(p) :
     return(f1(p[0])+f1(p[1]))
 print("g(1,2)= ",g1([1,2]))
-print("cf figure")
-
-x = np.arange(-5, 5, 0.25) # échelle x
-y = np.arange(-5, 5, 0.25) # échelle y
-z = x**4 - x**3 - 20*x**2 + x + 1 + y**4 - y**3 - 20*y**2 + y + 1
-'''
-# Affichage figure
-fig = plt.figure() # ouverture de la zone graphique
-ax = fig.gca(projection='3d') 
-x = np.arange(-5, 5, 0.1) # échelle x
-y = np.arange(-5, 5, 0.1) # échelle y
-x, y = np.meshgrid(x, y) # tracé de la grille
-F= x**4 - x**3 - 20*x**2 + x + 1 + y**4 - y**3 - 20*y**2 + y + 1
-surf = ax.plot_surface(x, y, F,zorder=3, rstride=1, cstride=1, alpha=0.4, linewidth=0, cmap=cm.PRGn, antialiased=False)
-ax.set_title('')
-ax.set_xlabel('x')
-ax.set_ylabel('y')
-ax.set_zlabel('g(x,y)')
-ax.scatter(3,3,g1([3,3])+50, s=100, color="lime",zorder=2)
-ax.scatter(-3,3,g1([-3,3])+50, s=100, color="orange",zorder=2)
-ax.scatter(-3,-3,g1([-3,-3])+50, s=100,color="orange",zorder=2)
-ax.scatter(0,0,g1([0,0])+50, s=100, color="red",zorder=2)
-ax.scatter(3,-3,g1([3,-3])+50, s=100,color="orange",zorder=2)
-ax.scatter(0,3,g1([0,-3]), s=100,color="blue",zorder=2)
-ax.scatter(0,-3,g1([0,-3]), s=100,color="blue",zorder=2)
-ax.scatter(-3,0,g1([-3,0]), s=100,color="blue",zorder=2)
-ax.scatter(3,0,g1([-3,0]), s=100,color="blue",zorder=2)
-fig.colorbar(surf, shrink=0.5, aspect=5)
-#plt.savefig("fonctionf1.png")
-plt.show()
-'''
 
 # gradient de g
 def gradg1(p):
@@ -281,15 +220,12 @@ def recuit2D(p0,k1,k2,tmax) :
     P[t:]=racine
     steps[0][t:]=racine[0]
     steps[1][t:]=racine[1]
-    '''
     print("Solution : ",racine)
     print("Nombre d'iterations : ",t)
     print("Norme gradient : ",norme)
-    '''
     return (steps,racine,t,norme,N)
 
 # paramètres :
-e=10^(-3)
 k1=10
 k2=.1
 tmax=20000
@@ -300,14 +236,14 @@ tmps1=time.clock()
 res3=recuit2D(x0,k1,k2,tmax)
 tmps2=time.clock()
 print ("Temps d'execution : %s secondes --- " %(tmps2-tmps1))
-'''
+
 # Affichage figure
+'''
 fig = plt.figure() # ouverture de la zone graphique
 ax = fig.gca(projection='3d') 
 x = np.arange(-5, 5, 0.1) # échelle x
 y = np.arange(-5, 5, 0.1) # échelle y
 x, y = np.meshgrid(x, y) # tracé de la grille
-
 F= x**4 - x**3 - 20*x**2 + x + 1 + y**4 - y**3 - 20*y**2 + y + 1
 surf = ax.plot_surface(x, y, F, rstride=1, zorder=1,alpha=0.6,cstride=1, linewidth=0, cmap=cm.PRGn, antialiased=False)
 #ax.set_title("\nx0=(%d,%d), k=%4.3f, k'=%4.3f, tmax=%d :" %(x0[0],x0[1],k1,k2,tmax) )
@@ -320,12 +256,12 @@ ax.set_zlim([-100,500])
 ax.set_xlabel('x')
 ax.set_ylabel('y')
 ax.set_zlabel('g(x,y)')
-
 fig.colorbar(surf, shrink=0.5, aspect=5)
 #plt.savefig("fonctionf1.png")
 plt.show()
 '''
 
+# Stats
 '''
 fichier = open("paramsg4.txt", "a")
 fichier.write("k1\tk2\tDepart\tX\tY\tnbIter\n")
@@ -345,8 +281,9 @@ for k2 in [50,5,0.5] :
         fichier.write(str(k1)+"\t"+str(k2)+"\t4\t"+str(res[1][0])+"\t"+str(res[1][1])+"\t"+str(res[2])+"\n")
 fichier.close()
 '''
-'''
+
 # impact sur l'évolution de la norme
+'''
 X=np.arange(len(res3[4]))
 Y1=res3[4]
 
@@ -362,7 +299,6 @@ ax.legend()
 plt.ylim([-10,12])
 plt.savefig("log_normeg1.k01.k'005.png")
 plt.show()
-
 '''
 
 ########################################
@@ -413,16 +349,13 @@ def recuit2DV2(p0,k1,k2,tmax) :
     P[t:]=racine
     steps[0][t:]=racine[0]
     steps[1][t:]=racine[1]
-    '''
     print("Solution : ",racine)
     print("Nombre d'iterations : ",t)
     print("Norme gradient : ",norme)
-    '''
     return (steps,racine,t,norme)
 
 
 # paramètres :
-e=10^(-3)
 k1=10
 k2=0.1
 tmax=20000
@@ -435,8 +368,8 @@ tmps2=time.clock()
 print ("Temps d'execution : %s secondes --- " %(tmps2-tmps1))
 
 # impact sur l'évolution de la norme
-X=np.arange(len(res3[4]))
-Y1=res3[4]
+X=np.arange(len(res4[4]))
+Y1=res4[4]
 
 # Affichage figure
 fig = plt.figure() 
@@ -466,18 +399,15 @@ surf = ax.plot_surface(x, y, F, rstride=1, zorder=1,alpha=0.6,cstride=1, linewid
 ax.plot(res4[0][0], res4[0][1], g1(res4[0]),zorder=2,color="orange") #plot definition and options 
 ax.scatter(res4[1][0],res4[1][1],g1(res4[1]), s=100, color="blue",zorder=3)
 ax.scatter(x0[0],x0[0],g1(x0), s=100, color="red",zorder=4)
-
 ax.set_xlabel('x')
 ax.set_ylabel('y')
 ax.set_zlabel('g(x,y)')
-
 fig.colorbar(surf, shrink=0.5, aspect=5)
 #plt.savefig("fonctionf1.png")
 plt.show()
 
-'''
-tmax=20000
 # stats :
+'''
 fichier = open("paramsgV2.txt", "a")
 fichier.write("version\tk1\tk2\tDepart\tX\tY\tnbIter\n")
 for k2 in [0.1]:
