@@ -50,7 +50,7 @@ def aff(villes,trajet,L,n,colors):
     for i in range(len(villes)-1) :
         ax.plot([villes[trajet[i]][0],villes[trajet[i+1]][0]],[villes[trajet[i]][1],villes[trajet[i+1]][1]],color="grey",zorder=1)
     ax.plot([villes[trajet[i+1]][0],villes[trajet[0]][0]],[villes[trajet[i+1]][1],villes[trajet[0]][1]],color="grey",zorder=1)
-    #plt.savefig("fonctionf1.png")
+    #plt.savefig("VoyageurN=%d.png" % n)
     plt.show()
     
 
@@ -85,7 +85,7 @@ ax.plot([L,L],[0,L],color="crimson",zorder=1)
 for i in range(len(villes)) : 
     ax.scatter(villes[i][0],villes[i][1],zorder=2,color=colors[i],s=100)
 plt.show()
-#plt.savefig("fonctionf1.png")
+#plt.savefig("VillesAleatoires.png")
 
 
 ################################
@@ -201,15 +201,10 @@ print(res1[0])
 print("Longueur du trajet : %.2f m" % res1[1])
 print("Nombre d'itérations : %d" % res1[2])
 print ("Temps d'execution : %s secondes --- " %(tmps2-tmps1))
-#res2=recuit(villes,k,tmax,colors)
-#res3=recuit(villes,k,tmax,colors)
-#res4=recuit(villes,k,tmax,colors)
 aff(villes,res1[0],L,100,colors)
-#aff(villes,res2[0],L)
-#aff(villes,res3[0],L)
-#aff(villes,res4[0],L)
-'''
+
 # Evolution de la distance 
+
 X=np.arange(0,tmax,1)
 
 fig = plt.figure() 
@@ -223,6 +218,7 @@ plt.show()
 
 
 # stats 
+'''
 fichier = open("Voyageur.txt", "w")
 fichier.write("k\tFonction\tDist\ttpsExe\tTrajet\tIter\n")
 for k in [1,0.5,0,0.01]:
